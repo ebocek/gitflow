@@ -1,4 +1,5 @@
 I added some text here
+added more here
 
 git-flow
 ========
@@ -33,11 +34,7 @@ by [bobthecow](http://github.com/bobthecow). It offers tab-completion for all
 git-flow subcommands and branch names.
 
 
-FAQ
----
-See the [FAQ](http://github.com/nvie/gitflow/wiki/FAQ) section of the project
-Wiki.
-
+deleted more here
 
 Please help out
 ---------------

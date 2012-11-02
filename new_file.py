@@ -1,3 +1,3 @@
 #!/usr/local/bin/python
 
-print("hi!")
+print("hi! some more text")
