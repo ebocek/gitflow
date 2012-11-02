@@ -1,3 +1,6 @@
 #!/usr/local/bin/python
 
-print("hi! some more text alsdfasfdasdadfs")
+print("hi! some more text")
+
+
+print('and more')
