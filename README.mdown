@@ -9,13 +9,6 @@ for Vincent Driessen's [branching model](http://nvie.com/git-model "original
 blog post").
 
 
-Getting started
----------------
-For the best introduction to get started with `git flow`, please read Jeff
-Kreeftmeijer's blog post:
-
-[http://jeffkreeftmeijer.com/2010/why-arent-you-using-git-flow/](http://jeffkreeftmeijer.com/2010/why-arent-you-using-git-flow/)
-
 Or have a look at one of these screen casts:
 
 * [How to use a scalable Git branching model called git-flow](http://buildamodule.com/video/change-management-and-version-control-deploying-releases-features-and-fixes-with-git-how-to-use-a-scalable-git-branching-model-called-gitflow) (by Build a Module)
@@ -75,6 +68,12 @@ any modifications you make to the source code, you are very much encouraged and
 invited to contribute back your modifications to the community, preferably
 in a Github fork, of course.
 
+Please help out
+---------------
+This project is still under development. Feedback and suggestions are very
+welcome and I encourage you to use the [Issues
+list](http://github.com/nvie/gitflow/issues) on Github to provide that
+feedback.
 
 ### Initialization
 
