@@ -40,19 +40,19 @@ init() {
   require_git_repo
   require_gitflow_initialized
   gitflow_load_settings
-  PREFIX=$(git config --get gitflow.prefix.feature)
+  PREFIX=$(git config --get gitflow.prefix.issue)
 }
 
 usage() {
-	echo "usage: git flow feature [list] [-v]"
-	echo "       git flow feature start [-F] <name> [<base>]"
-	echo "       git flow feature finish [-rFkDS] [<name|nameprefix>]"
-	echo "       git flow feature publish <name>"
-	echo "       git flow feature track <name>"
-	echo "       git flow feature diff [<name|nameprefix>]"
-	echo "       git flow feature rebase [-i] [<name|nameprefix>]"
-	echo "       git flow feature checkout [<name|nameprefix>]"
-	echo "       git flow feature pull [-r] <remote> [<name>]"
+	echo "usage: git flow issue [list] [-v]"
+	echo "       git flow issue start [-F] <name> [<base>]"
+	echo "       git flow issue finish [-rFkDS] [<name|nameprefix>]"
+	echo "       git flow issue publish <name>"
+	echo "       git flow issue track <name>"
+	echo "       git flow issue diff [<name|nameprefix>]"
+	echo "       git flow issue rebase [-i] [<name|nameprefix>]"
+	echo "       git flow issue checkout [<name|nameprefix>]"
+	echo "       git flow issue pull [-r] <remote> [<name>]"
 }
 
 cmd_default() {
@@ -63,21 +63,21 @@ cmd_list() {
 	DEFINE_boolean verbose false 'verbose (more) output' v
 	parse_args "$@"
 
-	local feature_branches
+	local issue_branches
 	local current_branch
 	local short_names
-	feature_branches=$(echo "$(git_local_branches)" | grep "^$PREFIX")
-	if [ -z "$feature_branches" ]; then
-		warn "No feature branches exist."
+	issue_branches=$(echo "$(git_local_branches)" | grep "^$PREFIX")
+	if [ -z "$issue_branches" ]; then
+		warn "No issue branches exist."
 		warn ""
-		warn "You can start a new feature branch:"
+		warn "You can start a new issue branch:"
 		warn ""
-		warn "    git flow feature start <name> [<base>]"
+		warn "    git flow issue start <name> [<base>]"
 		warn ""
 		exit 0
 	fi
 	current_branch=$(git branch --no-color | grep '^\* ' | grep -v 'no branch' | sed 's/^* //g')
-	short_names=$(echo "$feature_branches" | sed "s ^$PREFIX  g")
+	short_names=$(echo "$issue_branches" | sed "s ^$PREFIX  g")
 
 	# determine column width first
 	local width=0
@@ -145,13 +145,13 @@ expand_nameprefix_arg() {
 	esac
 }
 
-use_current_feature_branch_name() {
+use_current_issue_branch_name() {
 	local current_branch=$(git_current_branch)
 	if startswith "$current_branch" "$PREFIX"; then
 		BRANCH=$current_branch
 		NAME=${BRANCH#$PREFIX}
 	else
-		warn "The current HEAD is no feature branch."
+		warn "The current HEAD is no issue branch."
 		warn "Please specify a <name> argument."
 		exit 1
 	fi
@@ -162,13 +162,13 @@ expand_nameprefix_arg_or_current() {
 		expand_nameprefix_arg
 		require_branch "$PREFIX$NAME"
 	else
-		use_current_feature_branch_name
+		use_current_issue_branch_name
 	fi
 }
 
 name_or_current() {
 	if [ -z "$NAME" ]; then
-		use_current_feature_branch_name
+		use_current_issue_branch_name
 	fi
 }
 
@@ -215,7 +215,7 @@ cmd_start() {
 
 	# create branch
 	if ! git_do checkout -b "$BRANCH" "$BASE"; then
-		die "Could not create feature branch '$BRANCH'"
+		die "Could not create issue branch '$BRANCH'"
 	fi
 
 	echo
@@ -223,9 +223,9 @@ cmd_start() {
 	echo "- A new branch '$BRANCH' was created, based on '$BASE'"
 	echo "- You are now on branch '$BRANCH'"
 	echo ""
-	echo "Now, start committing on your feature. When done, use:"
+	echo "Now, start committing on your issue. When done, use:"
 	echo ""
-	echo "     git flow feature finish $NAME"
+	echo "     git flow issue finish $NAME"
 	echo
 }
 
@@ -233,8 +233,8 @@ cmd_finish() {
 	DEFINE_boolean fetch false "fetch from $ORIGIN before performing finish" F
 	DEFINE_boolean rebase false "rebase instead of merge" r
 	DEFINE_boolean keep false "keep branch after performing finish" k
-	DEFINE_boolean force_delete false "force delete feature branch after finish" D
-	DEFINE_boolean squash false "squash feature during merge" S
+	DEFINE_boolean force_delete false "force delete issue branch after finish" D
+	DEFINE_boolean squash false "squash issue during merge" S
 	parse_args "$@"
 	expand_nameprefix_arg_or_current
 
@@ -275,7 +275,7 @@ cmd_finish() {
 			echo "    git commit"
 			echo 
 			echo "You can then complete the finish by running it again:"
-			echo "    git flow feature finish $NAME"
+			echo "    git flow issue finish $NAME"
 			echo
 			exit 1
 		fi
@@ -301,11 +301,11 @@ cmd_finish() {
 
 	# if the user wants to rebase, do that first
 	if flag rebase; then
-		if ! git flow feature rebase "$NAME" "$DEVELOP_BRANCH"; then
+		if ! git flow issue rebase "$NAME" "$DEVELOP_BRANCH"; then
 			warn "Finish was aborted due to conflicts during rebase."
 			warn "Please finish the rebase manually now."
 			warn "When finished, re-run:"
-			warn "    git flow feature finish '$NAME' '$DEVELOP_BRANCH'"
+			warn "    git flow issue finish '$NAME' '$DEVELOP_BRANCH'"
 			exit 1
 		fi
 	fi
@@ -335,12 +335,12 @@ cmd_finish() {
 		echo "    git commit"
 		echo 
 		echo "You can then complete the finish by running it again:"
-		echo "    git flow feature finish $NAME"
+		echo "    git flow issue finish $NAME"
 		echo
 		exit 1
 	fi
 
-	# when no merge conflict is detected, just clean up the feature branch
+	# when no merge conflict is detected, just clean up the issue branch
 	helper_finish_cleanup
 }
 
@@ -365,12 +365,12 @@ helper_finish_cleanup() {
 
 	echo
 	echo "Summary of actions:"
-	echo "- The feature branch '$BRANCH' was merged into '$DEVELOP_BRANCH'"
+	echo "- The issue branch '$BRANCH' was merged into '$DEVELOP_BRANCH'"
 	#echo "- Merge conflicts were resolved"		# TODO: Add this line when it's supported
 	if flag keep; then
-		echo "- Feature branch '$BRANCH' is still available"
+		echo "- issue branch '$BRANCH' is still available"
 	else
-		echo "- Feature branch '$BRANCH' has been removed"
+		echo "- issue branch '$BRANCH' has been removed"
 	fi
 	echo "- You are now on branch '$DEVELOP_BRANCH'"
 	echo
@@ -432,7 +432,7 @@ cmd_diff() {
 		git diff "$BASE..$BRANCH"
 	else
 		if ! git_current_branch | grep -q "^$PREFIX"; then
-			die "Not on a feature branch. Name one explicitly."
+			die "Not on a issue branch. Name one explicitly."
 		fi
 
 		BASE=$(git merge-base "$DEVELOP_BRANCH" HEAD)
@@ -447,7 +447,7 @@ cmd_checkout() {
 		expand_nameprefix_arg
 		git_do checkout "$BRANCH"
 	else
-		die "Name a feature branch explicitly."
+		die "Name a issue branch explicitly."
 	fi
 }
 
@@ -483,7 +483,7 @@ avoid_accidental_cross_branch_action() {
 }
 
 cmd_pull() {
-	#DEFINE_string prefix false 'alternative remote feature branch name prefix' p
+	#DEFINE_string prefix false 'alternative remote issue branch name prefix' p
 	DEFINE_boolean rebase false "pull with rebase" r
 	parse_remote_name "$@"
 
@@ -492,12 +492,12 @@ cmd_pull() {
 	fi
 	name_or_current
 
-	# To avoid accidentally merging different feature branches into each other,
-	# die if the current feature branch differs from the requested $NAME
+	# To avoid accidentally merging different issue branches into each other,
+	# die if the current issue branch differs from the requested $NAME
 	# argument.
 	local current_branch=$(git_current_branch)
 	if startswith "$current_branch" "$PREFIX"; then
-		# we are on a local feature branch already, so $BRANCH must be equal to
+		# we are on a local issue branch already, so $BRANCH must be equal to
 		# the current branch
 		avoid_accidental_cross_branch_action || die
 	fi
