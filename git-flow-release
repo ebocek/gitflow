@@ -184,6 +184,11 @@ cmd_start() {
 	echo "- When done, run:"
 	echo
 	echo "     git flow release finish '$VERSION'"
+    echo
+    echo "***************************************************************"
+    echo "  If using a setup.py script do not forget to update the"
+    echo "  version contained therein prior to running finish"
+    echo "***************************************************************"
 	echo
 }
 
