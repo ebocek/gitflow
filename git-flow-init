@@ -312,7 +312,7 @@ cmd_default() {
 
 	# Version tag prefix
 	if ! git config --get gitflow.prefix.versiontag >/dev/null 2>&1 || flag force; then
-		default_suggestion=$(git config --get gitflow.prefix.versiontag || echo "v")
+		default_suggestion=$(git config --get gitflow.prefix.versiontag || echo "")
 		printf "Version tag prefix? [$default_suggestion] "
 		if noflag defaults; then
 			read answer
